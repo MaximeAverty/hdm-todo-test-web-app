@@ -1,7 +1,7 @@
 /**
  * @todo YOU HAVE TO IMPLEMENT THE DELETE AND SAVE TASK ENDPOINT, A TASK CANNOT BE UPDATED IF THE TASK NAME DID NOT CHANGE, YOU'VE TO CONTROL THE BUTTON STATE ACCORDINGLY
  */
-import { Check, Delete } from '@mui/icons-material';
+import { Check, Delete, Edit } from '@mui/icons-material';
 import {
   Box, Button, Container, IconButton, TextField, Typography 
 } from '@mui/material';
@@ -17,7 +17,9 @@ const TodoPage = () => {
 
   const handleDelete = async (id: number) => {
     // @todo IMPLEMENT HERE : DELETE THE TASK & REFRESH ALL THE TASKS, DON'T FORGET TO ATTACH THE FUNCTION TO THE APPROPRIATE BUTTON
-  }
+    await api.delete(`/tasks/${id}`);
+    setTasks((prev) => prev.filter((task) => task.id !== id));
+  };
 
   const handleSave = async () => {
     // @todo IMPLEMENT HERE : SAVE THE TASK & REFRESH ALL THE TASKS, DON'T FORGET TO ATTACH THE FUNCTION TO THE APPROPRIATE BUTTON
@@ -44,8 +46,11 @@ const TodoPage = () => {
                 <IconButton color="success" disabled>
                   <Check />
                 </IconButton>
-                <IconButton color="error" onClick={() => {}}>
+                <IconButton color="error" onClick={() => { handleDelete(task.id); }}>
                   <Delete />
+                </IconButton>
+                <IconButton color="success">
+                  <Edit />
                 </IconButton>
               </Box>
             </Box>
