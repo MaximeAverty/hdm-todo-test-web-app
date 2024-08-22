@@ -30,12 +30,18 @@ const TodoPage = () => {
   };
 
   const handleChange = (id: number, content: string) => {
-    setEditingTasks((prev) => ({ ...prev, [id]: content }));
+    setEditingTasks((prev) => ({
+      ...prev,
+      [id]: content,
+    }));
   };
 
-  const handleSave = async () => {
+  const handleSave = async (id: number) => {
     // @todo IMPLEMENT HERE : SAVE THE TASK & REFRESH ALL THE TASKS, DON'T FORGET TO ATTACH THE FUNCTION TO THE APPROPRIATE BUTTON
-    
+    if (editingTasks[id]) {
+      await api.patch(`/tasks/${id}`, { name: editingTasks[id] });
+      setTasks((prev) => prev.map((task) => (task.id === id ? { ...task, name: editingTasks[id] } : task)));
+    }
   };
 
   useEffect(() => {
@@ -72,8 +78,11 @@ const TodoPage = () => {
               <IconButton
                 color="success"
                 disabled={
-                  !editingTasks[task.id] || editingTasks[task.id] === task.name
+                  !(
+                    editingTasks[task.id] && editingTasks[task.id] !== task.name
+                  )
                 }
+                onClick={() => handleSave(task.id)}
               >
                 <Check />
               </IconButton>

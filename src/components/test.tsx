@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from 'react';
 import { Check, Delete, Edit } from '@mui/icons-material';
 import {
   Box,
@@ -7,14 +8,13 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { useEffect, useState } from 'react';
 import useFetch from '../hooks/useFetch.ts';
 import { Task } from '../index';
 
 const TodoPage = () => {
   const api = useFetch();
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [editingTasks, setEditingTasks] = useState<{ [key: number]: string }>(
+  const [editingTasks, setEditingTasks] = useState<{ [id: number]: string }>(
     {},
   );
 
@@ -25,20 +25,27 @@ const TodoPage = () => {
     setTasks((prev) => prev.filter((task) => task.id !== id));
   };
 
-  const handleSave = async (id: number) => {
-    const updatedTask = tasks.find((task) => task.id === id);
-    if (updatedTask) {
-      await api.put(`/tasks/${id}`, { name: editingTasks[id] });
-      setEditingTasks((prev) => {
-        const { [id]: _, ...rest } = prev;
-        return rest;
-      });
-      handleFetchTasks();
-    }
+  const handleChange = (id: number, newName: string) => {
+    setEditingTasks((prev) => ({
+      ...prev,
+      [id]: newName,
+    }));
   };
 
-  const handleChange = (id: number, value: string) => {
-    setEditingTasks((prev) => ({ ...prev, [id]: value }));
+  const handleSave = async (id: number) => {
+    if (editingTasks[id]) {
+      await api.patch(`/tasks/${id}`, { name: editingTasks[id] });
+      setTasks((prev) =>
+        prev.map((task) =>
+          task.id === id ? { ...task, name: editingTasks[id] } : task,
+        ),
+      );
+      setEditingTasks((prev) => {
+        const newEditingTasks = { ...prev };
+        delete newEditingTasks[id];
+        return newEditingTasks;
+      });
+    }
   };
 
   useEffect(() => {
@@ -67,17 +74,19 @@ const TodoPage = () => {
             <TextField
               size="small"
               value={editingTasks[task.id] ?? task.name}
-              onChange={(e) => handleChange(task.id, e.target.value)}
               fullWidth
+              onChange={(e) => handleChange(task.id, e.target.value)}
               sx={{ maxWidth: 350 }}
             />
             <Box>
               <IconButton
                 color="success"
-                onClick={() => handleSave(task.id)}
                 disabled={
-                  !editingTasks[task.id] || editingTasks[task.id] === task.name
+                  !(
+                    editingTasks[task.id] && editingTasks[task.id] !== task.name
+                  )
                 }
+                onClick={() => handleSave(task.id)}
               >
                 <Check />
               </IconButton>
