@@ -1,5 +1,9 @@
 export default function useFetch() {
-  const callApi = async (method: 'GET' | 'DELETE' | 'POST' | 'PUT' | 'PATCH', route: string, data?: Record<string, any>) => {
+  const callApi = async (
+    method: 'GET' | 'DELETE' | 'POST' | 'PUT' | 'PATCH',
+    route: string,
+    data?: Record<string, any>,
+  ) => {
     try {
       const myHeaders = new Headers();
 
@@ -9,10 +13,13 @@ export default function useFetch() {
       const requestOptions = {
         method,
         headers: myHeaders,
-        ...(data ? { body:  JSON.stringify(data) } : {}),
+        ...(data ? { body: JSON.stringify(data) } : {}),
       };
 
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}${route}`, requestOptions);
+      const response = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}${route}`,
+        requestOptions,
+      );
 
       return response.json();
     } catch (error) {
@@ -24,9 +31,13 @@ export default function useFetch() {
 
   return {
     get: (route: string) => callApi('GET', route),
-    post: (route: string, data: Record<string, any>) => callApi('POST', route, data),
-    put: (route: string, data: Record<string, any>) => callApi('PUT', route, data),
-    patch: (route: string, data: Record<string, any>) => callApi('PATCH', route, data),
-    delete: (route: string, data?: Record<string, any>) => callApi('DELETE', route, data),
-  }
+    post: (route: string, data: Record<string, any>) =>
+      callApi('POST', route, data),
+    put: (route: string, data: Record<string, any>) =>
+      callApi('PUT', route, data),
+    patch: (route: string, data: Record<string, any>) =>
+      callApi('PATCH', route, data),
+    delete: (route: string, data?: Record<string, any>) =>
+      callApi('DELETE', route, data),
+  };
 }
