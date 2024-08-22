@@ -4,7 +4,7 @@ import { Task } from '../index';
 
 interface TaskCardProps {
   task: Task;
-  handleEditTask: (id: number, content: string) => {};
+  handleEditTask: (id: number, content: string) => void;
   handleDeleteTask: (id: number) => {};
   editingTasks: { [id: number]: string };
   handleSave: (id: number) => Promise<void>;
@@ -24,7 +24,6 @@ const TaskCard = ({
     mt={2}
     gap={1}
     width="100%"
-    draggable
   >
     <TextField
       size="small"

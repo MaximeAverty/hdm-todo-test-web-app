@@ -1,18 +1,17 @@
 /**
  * @todo YOU HAVE TO IMPLEMENT THE DELETE AND SAVE TASK ENDPOINT, A TASK CANNOT BE UPDATED IF THE TASK NAME DID NOT CHANGE, YOU'VE TO CONTROL THE BUTTON STATE ACCORDINGLY
  */
-import { Add, Check, Delete, Edit } from '@mui/icons-material';
+import { Add } from '@mui/icons-material';
 import {
   Box,
   Button,
   Container,
-  IconButton,
   TextField,
   Typography,
   Card,
   CardContent,
 } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import useFetch from '../hooks/useFetch.ts';
 import { Task } from '../index';
 import TaskCard from './TaskCard.tsx';
