@@ -31,6 +31,7 @@ const TaskCard = ({
       fullWidth
       onChange={(e) => handleEditTask(task.id, e.target.value)}
       sx={{ maxWidth: 350 }}
+      autoComplete="off"
     />
     <Box>
       <IconButton

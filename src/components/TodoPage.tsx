@@ -57,6 +57,7 @@ const TodoPage = () => {
       const newTask = await api.post('/tasks', { name: addTaskInput });
       setTasks((prev) => [...prev, newTask]);
       setAddTaskInput('');
+      setShowModal((prev) => !prev);
     }
   };
 
@@ -109,6 +110,7 @@ const TodoPage = () => {
                 value={addTaskInput}
                 fullWidth
                 onChange={(e) => setAddTaskInput(e.target.value)}
+                autoComplete="off"
               />
               <Button
                 variant="contained"
