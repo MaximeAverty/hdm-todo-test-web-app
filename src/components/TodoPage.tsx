@@ -15,6 +15,7 @@ import {
 import React, { useEffect, useState } from 'react';
 import useFetch from '../hooks/useFetch.ts';
 import { Task } from '../index';
+import TaskCard from './TaskCard.tsx';
 
 const TodoPage = () => {
   const api = useFetch();
@@ -74,44 +75,14 @@ const TodoPage = () => {
 
       <Box justifyContent="center" mt={5} flexDirection="column">
         {tasks.map((task) => (
-          <Box
+          <TaskCard
             key={task.id}
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-            mt={2}
-            gap={1}
-            width="100%"
-          >
-            <TextField
-              size="small"
-              value={editingTasks[task.id] ?? task.name}
-              fullWidth
-              onChange={(e) => handleEditTask(task.id, e.target.value)}
-              sx={{ maxWidth: 350 }}
-            />
-            <Box>
-              <IconButton
-                color="success"
-                disabled={
-                  !(
-                    editingTasks[task.id] && editingTasks[task.id] !== task.name
-                  )
-                }
-                onClick={() => handleSave(task.id)}
-              >
-                <Check />
-              </IconButton>
-              <IconButton
-                color="error"
-                onClick={() => {
-                  handleDelete(task.id);
-                }}
-              >
-                <Delete />
-              </IconButton>
-            </Box>
-          </Box>
+            task={task}
+            handleEditTask={handleEditTask}
+            handleDeleteTask={handleDelete}
+            handleSave={handleSave}
+            editingTasks={editingTasks}
+          />
         ))}
 
         <Box display="flex" justifyContent="center" alignItems="center" mt={2}>
