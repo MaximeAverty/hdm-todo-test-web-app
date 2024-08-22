@@ -63,7 +63,6 @@
     "no-param-reassign": "off",
     "no-shadow": "off",
     "object-curly-spacing": ["error", "always"],
-    "array-bracket-spacing": ["error", "always"],
     "space-before-blocks": ["error", "always"],
     "keyword-spacing": [2],
     "space-in-parens": ["error", "never"],

@@ -1,6 +1,3 @@
-/**
- * @todo YOU HAVE TO IMPLEMENT THE DELETE AND SAVE TASK ENDPOINT, A TASK CANNOT BE UPDATED IF THE TASK NAME DID NOT CHANGE, YOU'VE TO CONTROL THE BUTTON STATE ACCORDINGLY
- */
 import { Check, Delete, Edit } from '@mui/icons-material';
 import {
   Box,
@@ -10,32 +7,38 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import useFetch from '../hooks/useFetch.ts';
 import { Task } from '../index';
 
 const TodoPage = () => {
   const api = useFetch();
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [editingTasks, setEditingTasks] = useState<{ [id: number]: string }>(
+  const [editingTasks, setEditingTasks] = useState<{ [key: number]: string }>(
     {},
   );
 
   const handleFetchTasks = async () => setTasks(await api.get('/tasks'));
 
   const handleDelete = async (id: number) => {
-    // @todo IMPLEMENT HERE : DELETE THE TASK & REFRESH ALL THE TASKS, DON'T FORGET TO ATTACH THE FUNCTION TO THE APPROPRIATE BUTTON
     await api.delete(`/tasks/${id}`);
     setTasks((prev) => prev.filter((task) => task.id !== id));
   };
 
-  const handleChange = (id: number, content: string) => {
-    setEditingTasks((prev) => ({ ...prev, [id]: content }));
+  const handleSave = async (id: number) => {
+    const updatedTask = tasks.find((task) => task.id === id);
+    if (updatedTask) {
+      await api.put(`/tasks/${id}`, { name: editingTasks[id] });
+      setEditingTasks((prev) => {
+        const { [id]: _, ...rest } = prev;
+        return rest;
+      });
+      handleFetchTasks();
+    }
   };
 
-  const handleSave = async () => {
-    // @todo IMPLEMENT HERE : SAVE THE TASK & REFRESH ALL THE TASKS, DON'T FORGET TO ATTACH THE FUNCTION TO THE APPROPRIATE BUTTON
-    
+  const handleChange = (id: number, value: string) => {
+    setEditingTasks((prev) => ({ ...prev, [id]: value }));
   };
 
   useEffect(() => {
@@ -64,25 +67,21 @@ const TodoPage = () => {
             <TextField
               size="small"
               value={editingTasks[task.id] ?? task.name}
-              fullWidth
               onChange={(e) => handleChange(task.id, e.target.value)}
+              fullWidth
               sx={{ maxWidth: 350 }}
             />
             <Box>
               <IconButton
                 color="success"
+                onClick={() => handleSave(task.id)}
                 disabled={
                   !editingTasks[task.id] || editingTasks[task.id] === task.name
                 }
               >
                 <Check />
               </IconButton>
-              <IconButton
-                color="error"
-                onClick={() => {
-                  handleDelete(task.id);
-                }}
-              >
+              <IconButton color="error" onClick={() => handleDelete(task.id)}>
                 <Delete />
               </IconButton>
             </Box>
